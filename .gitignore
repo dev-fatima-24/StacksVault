@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+.next/
+target/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+
+# Test coverage
+coverage/
+
+# Prisma dev migrations
+prisma/migrations/dev/
+
+# WebAssembly
+*.wasm

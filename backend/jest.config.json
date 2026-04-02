@@ -1,0 +1,8 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "testMatch": ["**/tests/**/*.test.ts"],
+  "moduleNameMapper": {
+    "^../src/stacks$": "<rootDir>/tests/__mocks__/stacks.ts"
+  }
+}

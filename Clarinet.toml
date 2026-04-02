@@ -1,0 +1,17 @@
+[project]
+name = "stacksvault"
+description = "Programmable remittance protocol with yield-bearing vault on Stacks"
+authors = []
+telemetry = false
+
+[contracts.vault]
+path = "contracts/vault.clar"
+
+[contracts.remittance]
+path = "contracts/remittance.clar"
+
+[contracts.yield]
+path = "contracts/yield.clar"
+
+[repl.settings]
+analysis = ["check_checker"]

@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  address     String   @unique
+  createdAt   DateTime @default(now())
+
+  sentTxs      Transaction[]      @relation("Sender")
+  receivedTxs  Transaction[]      @relation("Recipient")
+  vaultState   VaultState?
+  loans        Loan[]
+  lenderPositions LenderPosition[]
+  attestationsGiven  HealthAttestation[] @relation("Vet")
+  attestationsReceived HealthAttestation[] @relation("Farmer")
+}
+
+model Transaction {
+  id               String   @id @default(cuid())
+  txId             String   @unique
+  senderAddress    String
+  recipientAddress String
+  amount           BigInt
+  lockedAmount     BigInt
+  instantAmount    BigInt
+  lockPct          Int
+  status           String   @default("pending")
+  blockHeight      Int?
+  createdAt        DateTime @default(now())
+
+  sender    User @relation("Sender",    fields: [senderAddress],    references: [address])
+  recipient User @relation("Recipient", fields: [recipientAddress], references: [address])
+}
+
+model VaultState {
+  id            String   @id @default(cuid())
+  userAddress   String   @unique
+  lockedBalance BigInt   @default(0)
+  yieldAccrued  BigInt   @default(0)
+  lastUpdated   DateTime @default(now())
+
+  user User @relation(fields: [userAddress], references: [address])
+}
+
+model Loan {
+  id               String   @id @default(cuid())
+  borrowerAddress  String
+  amount           BigInt
+  collateral       BigInt
+  termDays         Int
+  status           String   @default("active") // active | repaid | defaulted
+  dueDate          DateTime
+  createdAt        DateTime @default(now())
+
+  borrower User @relation(fields: [borrowerAddress], references: [address])
+}
+
+model LenderPosition {
+  id            String   @id @default(cuid())
+  lenderAddress String
+  amount        BigInt
+  since         DateTime @default(now())
+
+  lender User @relation(fields: [lenderAddress], references: [address])
+}
+
+model HealthAttestation {
+  id            String   @id @default(cuid())
+  farmerAddress String
+  vetAddress    String
+  score         Int
+  notes         String   @default("")
+  createdAt     DateTime @default(now())
+
+  farmer User @relation("Farmer", fields: [farmerAddress], references: [address])
+  vet    User @relation("Vet",    fields: [vetAddress],    references: [address])
+}
